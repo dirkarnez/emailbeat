@@ -11,3 +11,6 @@ emailbeat
 [--port={smtp port | default 587}] \
 [--interval={heartbeat interval in seconds | default 1800}]
 ```
+### Supported email services
+- [x] Outlook
+- [ ] Gmail
