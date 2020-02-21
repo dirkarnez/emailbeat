@@ -3,20 +3,21 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gopkg.in/gomail.v2"
 	"time"
+
+	"github.com/dirkarnez/smail"
 )
 
 var (
-	email string
+	email    string
 	password string
-	smtp string
-	port int
-	interval  int
+	smtp     string
+	port     int
+	interval int
 )
 
 const (
-	TIME_FORMAT = "2006.01.02 15:04:05"
+	timeFormat = "2006.01.02 15:04:05"
 )
 
 func main() {
@@ -32,27 +33,24 @@ func main() {
 		return
 	}
 
-	m := gomail.NewMessage()
-	m.SetHeader("From", email)
-	m.SetHeader("To", email)
-	m.SetHeader("Subject", fmt.Sprintf("EmailBeat [%s]", time.Now().Format(TIME_FORMAT)))
-
-	d := gomail.NewDialer(smtp, port, email, password)
-
-	s, err := d.Dial()
+	s, err := smail.Dial(
+		email,
+		password,
+		smtp,
+		port,
+	)
 	if err != nil {
 		panic(err)
 	}
 	defer s.Close()
 
-	t := time.NewTicker(time.Duration(time.Second * 3))
+	t := time.NewTicker(time.Duration(time.Second * time.Duration(interval)))
 	defer t.Stop()
 
 	for {
-		<- t.C
+		<-t.C
 
-		err = gomail.Send(s, m)
-
+		err = smail.Send(s, fmt.Sprintf("EmailBeat [%s]", time.Now().Format(timeFormat)))
 		if err != nil {
 			panic(err)
 		}
