@@ -50,7 +50,7 @@ func main() {
 	for {
 		<-t.C
 
-		err = smail.Send(s, fmt.Sprintf("EmailBeat [%s]", time.Now().Format(timeFormat)))
+		err = smail.Send(s, fmt.Sprintf("EmailBeat [%s]", time.Now().Format(timeFormat)), "")
 		if err != nil {
 			panic(err)
 		}
